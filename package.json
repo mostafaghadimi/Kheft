@@ -26,6 +26,13 @@
   },
   "dependencies": {
     "antd": "^2.13.14",
-    "react-router": "^4.3.1"
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "nodemon": "^1.18.2",
+    "path": "^0.12.7",
+    "react-router": "^4.3.1",
+    "route": "^0.2.5",
+    "router": "^1.3.3"
   }
 }
