@@ -12,6 +12,15 @@ serverMsg = function(err) {
 }
 app.listen(port, serverMsg);
 
+// DataBase using Mongoose because of simplicity and schema
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/KheftKetab', { useNewUrlParser: true });
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  // we're connected!
+});
+
 // In sendFile method to access the directory in which you are you need this part
 var path = require('path');
 
@@ -19,22 +28,9 @@ var path = require('path');
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 
-// mapping static files :)) 
+// mapping static files :))
 app.use('/build', express.static('../build/'));
 
-// TODO: use route to control request in several files
-// var Router = require('route');
-
-// Session
-var session = require('express-session');
-app.use(session({
-  secret: 'KheftKetab.ir',
-  saveUninitialized: true,
-  cookie: {
-    secure: true
-  }
-}));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname , '../index.html'));
-});
+// Response to Requests in separated file
+var routes = require('/routes.js');
+app.use('/', routes);
