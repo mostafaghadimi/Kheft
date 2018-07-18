@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 
+
 // Running Server On the defined port
 port = 3000;
 serverMsg = function(err) {
@@ -28,9 +29,43 @@ var path = require('path');
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 
+// A package for hashing the passwords https://www.npmjs.com/package/bcrypt
+var bcrypt = require('bcrypt');
+
 // mapping static files :))
 app.use('/build', express.static('../build/'));
+app.use('/styles', express.static('../styles/'));
+app.use('/scripts', express.static('../scripts/'));
+
+// Session
+var session = require('express-session');
+app.use(session({
+  secret: 'KheftKetab.ir',
+  saveUninitialized: false,
+  resave: true,
+  cookie: {
+    secure: true
+  }
+}));
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname , '../index.html'));
+});
+
+app.get('/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy(function(err) {
+      if(err) {
+        return next(err);
+      } else {
+        return res.redirect('/');
+      }
+    });
+  }
+});
+
 
 // Response to Requests in separated file
-var routes = require('/routes.js');
-app.use('/', routes);
+// var routes = require('./routes.js');
+// app.use('/', routes);

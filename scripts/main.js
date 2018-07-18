@@ -1,21 +1,10 @@
-import React, {Component} from 'react'
-import ReactDOM from 'react-dom'
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import Registration from './registration';
 
+import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
 
-// class App extends Component{
-//   render()
-// }
-function Welcome(props){
-  return <h1> Hello, {props.name + " " + props.lastName}</h1>
-}
+const WrappedRegistrationForm = Form.create()(Registration);
+ReactDOM.render(<WrappedRegistrationForm />, document.getElementById('main'));
 
-function App (){
-  return (
-    <div>
-      <Welcome name='Mostafa' lastName= 'Ghadimi'/>
-      <Welcome name='Mehran' lastName= 'Hosein Zade'/>
-      <Welcome name='Mehran' lastName= 'Asghari'/>
-    </div>
-  )
-}
-ReactDOM.render(<App/> , document.getElementById('main'))
+// ReactDOM.render(<h1>salam</h1>, document.getElementById('main'));

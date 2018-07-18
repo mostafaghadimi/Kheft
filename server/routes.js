@@ -1,6 +1,8 @@
 var express = require('express');
+var app = express();
 var router = express.Router();
 
+// // TODO: Check this part
 // Session
 var session = require('express-session');
 app.use(session({

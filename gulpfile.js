@@ -8,11 +8,11 @@ var util = require('gulp-util');
 var watchify = require('watchify')
 var buffer = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
-
+// {presets: ['es2015', 'react'], plugins: ['transform-class-properties']}
 
 gulp.task('browserify' , function(){
   return browserify('./scripts/main.js')
-        .transform(babelify , {presets: ["es2015", "react"]})
+        .transform(babelify , {presets: ["es2015", "react"], plugins: ['transform-class-properties']})
         .bundle()
         .on('error' , function(e) {
           console.log(e.message);
