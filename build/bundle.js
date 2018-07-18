@@ -109919,19 +109919,14 @@ var RegistrationForm = function (_Component) {
         }
       };
       var prefixSelector = getFieldDecorator('prefix', {
-        initialValue: '86'
+        initialValue: '98'
       })(_react2.default.createElement(
         _antd.Select,
         { style: { width: 70 } },
         _react2.default.createElement(
           Option,
-          { value: '86' },
-          '+86'
-        ),
-        _react2.default.createElement(
-          Option,
-          { value: '87' },
-          '+87'
+          { value: '98' },
+          '+98'
         )
       ));
 

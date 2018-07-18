@@ -36,6 +36,7 @@ var bcrypt = require('bcrypt');
 app.use('/build', express.static('../build/'));
 app.use('/styles', express.static('../styles/'));
 app.use('/scripts', express.static('../scripts/'));
+app.use('/assets', express.static('../assets/'))
 
 // Session
 var session = require('express-session');
@@ -50,7 +51,7 @@ app.use(session({
 
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname , '../index.html'));
+  res.sendFile(path.join(__dirname , '../assets/html/index.html'));
 });
 
 app.get('/logout', (req, res) => {
