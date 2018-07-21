@@ -11,14 +11,16 @@ export default class Registration extends Component {
       name: ""
     }
   }
+
   handleSubmit (e) {
-    e.preventDefault(); // NB
+    e.preventDefault(); //NB
     const data = {name: document.getElementById('name').value};
     console.log(data)
     axios.post('/registration', data).then(res => {
       console.log(res);
     }).catch(console.error) // now you could see what the actual problem is
   }
+
   handleChange (){
     this.setState({name: event.target.value})
   }

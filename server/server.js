@@ -13,13 +13,13 @@ serverMsg = function(err) {
 app.listen(port, serverMsg);
 
 // DataBase using Mongoose because of simplicity and schema
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/KheftKetab', { useNewUrlParser: true });
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  // we're connected!
-});
+// var mongoose = require('mongoose');
+// mongoose.connect('mongodb://localhost:27017/KheftKetab', { useNewUrlParser: true });
+// var db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'connection error:'));
+// db.once('open', function() {
+//   // we're connected!
+// });
 
 // In sendFile method to access the directory in which you are you need this part
 var path = require('path');

@@ -5,11 +5,20 @@ var userSchema = mongoose.Schema({
     required: true,
     trim: true
   },
+  credit:{
+    type: Number,
+    default:0
+  },
   email: {
     type: String,
     unique: true,
     required: true,
     trim: true
+  },
+  telegramId:{
+    type: String,
+    trim: true,
+    required: true
   },
   phoneNumber: {
     type: Number,
@@ -25,6 +34,9 @@ var userSchema = mongoose.Schema({
     required: true
   },
   inboxMessages: {
+    type: Array
+  },
+  submittedBooks:{
     type: Array
   },
   profilePicture: {
