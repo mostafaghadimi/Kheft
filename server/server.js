@@ -1,7 +1,6 @@
 var express = require('express');
 var app = express();
 
-
 // Running Server On the defined port
 port = 3000;
 serverMsg = function(err) {
@@ -52,6 +51,11 @@ app.use(session({
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname , '../assets/html/index.html'));
+});
+
+app.post('/registration', (req, res) => {
+  console.log('salam');
+  console.log(req.body);
 });
 
 app.get('/logout', (req, res) => {

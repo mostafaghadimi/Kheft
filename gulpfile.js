@@ -11,8 +11,8 @@ var uglify = require('gulp-uglify');
 // {presets: ['es2015', 'react'], plugins: ['transform-class-properties']}
 
 gulp.task('browserify' , function(){
-  return browserify('./scripts/main.js')
-        .transform(babelify , {presets: ["es2015", "react"], plugins: ['transform-class-properties']})
+  return browserify('./assets/scripts/main.js')
+        .transform(babelify , {presets: ["es2015", "react"]})
         .bundle()
         .on('error' , function(e) {
           console.log(e.message);
@@ -27,5 +27,5 @@ gulp.task('browserify' , function(){
 
 
 gulp.task('watch' , ['browserify'],  function() {
-  gulp.watch('./scripts/**/*.js' , ['browserify']);
+  gulp.watch('./assets/scripts/**/*.js' , ['browserify']);
 });
