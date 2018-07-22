@@ -12,17 +12,18 @@ export default class Registration extends Component {
     }
   }
 
-  handleSubmit (e) {
-    e.preventDefault(); //NB
-    const data = {name: document.getElementById('name').value};
-    console.log(data)
-    axios.post('/registration', data).then(res => {
-      console.log(res);
-    }).catch(console.error) // now you could see what the actual problem is
+  handleSubmit(e) {
+    e.preventDefault();
+    var data = {name : document.getElementById('name').value};
+    console.log(data);
+    axios.post('/registration', data)
+    .then(function(res){
+      console.log(res.data);
+    }).catch(console.error);
   }
 
   handleChange (){
-    this.setState({name: event.target.value})
+    this.setState({name: event.target.value});
   }
   render() {
     return (<form className="registrationForm">
@@ -34,7 +35,7 @@ export default class Registration extends Component {
       <br/>
       <input type="password" name="password" required="required" placeholder="رمز عبور"/>
       <br/> */}
-      <button className="registerButton" onClick={this.handleSubmit}>عضویت</button>
+      <button className="registerButton" onClick={this.handleSubmit} >عضویت</button>
     </form>)
   };
 }

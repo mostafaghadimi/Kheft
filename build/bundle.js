@@ -92,12 +92,12 @@ var Registration = function (_Component) {
   _createClass(Registration, [{
     key: 'handleSubmit',
     value: function handleSubmit(e) {
-      e.preventDefault(); //NB
+      e.preventDefault();
       var data = { name: document.getElementById('name').value };
       console.log(data);
       _axios2.default.post('/registration', data).then(function (res) {
-        console.log(res);
-      }).catch(console.error); // now you could see what the actual problem is
+        console.log(res.data);
+      }).catch(console.error);
     }
   }, {
     key: 'handleChange',

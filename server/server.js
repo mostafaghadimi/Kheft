@@ -26,12 +26,13 @@ var path = require('path');
 
 // BodyParser is the package to have access on request parameters sent from client
 var bodyParser = require('body-parser');
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 // A package for hashing the passwords https://www.npmjs.com/package/bcrypt
 var bcrypt = require('bcrypt');
 
-// mapping static files :))
+// mapping static files
 app.use('/build', express.static('../build/'));
 app.use('/styles', express.static('../styles/'));
 app.use('/scripts', express.static('../scripts/'));
@@ -54,8 +55,9 @@ app.get('/', (req, res) => {
 });
 
 app.post('/registration', (req, res) => {
-  console.log('salam');
+  console.log('salam:');
   console.log(req.body);
+  res.send('');
 });
 
 app.get('/logout', (req, res) => {
