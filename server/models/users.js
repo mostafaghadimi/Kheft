@@ -20,30 +20,29 @@ var userSchema = mongoose.Schema({
     trim: true,
     required: true
   },
-  phoneNumber: {
-    type: Number,
-    required: true,
-    trim: true
-  },
-  university: {
+  password: {
     type: String,
     required: true
-  },
-  fieldOfStudy: {
-    type: String,
-    required: true
-  },
-  inboxMessages: {
-    type: Array
-  },
-  submittedBooks:{
-    type: Array
-  },
-  profilePicture: {
-    // TODO: edit the default mode picture
-    type: String,
-    default: '/'
   }
+  // university: {
+  //   type: String,
+  //   required: true
+  // },
+  // fieldOfStudy: {
+  //   type: String,
+  //   required: true
+  // },
+  // inboxMessages: {
+  //   type: Array
+  // },
+  // submittedBooks:{
+  //   type: Array
+  // },
+  // profilePicture: {
+  //   // TODO: edit the default mode picture
+  //   type: String,
+  //   default: '/'
+  // }
 });
 
 var User = mongoose.model('User', userSchema);

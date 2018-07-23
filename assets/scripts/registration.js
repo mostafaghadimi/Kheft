@@ -21,7 +21,6 @@ export default class Registration extends Component {
     formData.append('name',document.getElementById('name').value);
     formData.append('email',document.getElementById('email').value);
     formData.append('telegramId',document.getElementById('telegramId').value);
-    formData.append('phoneNumber',document.getElementById('phoneNumber').value);
     formData.append('password',document.getElementById('password').value);
     formData.append('image', imagefile.files[0]);
     console.log(formData);
@@ -37,8 +36,6 @@ export default class Registration extends Component {
       <input type="email" id="email" required="required" placeholder="ایمیل"/>
       <br/>
       <input type="text" id="telegramId" required="required" placeholder="آی‌دی تلگرام"/>
-      <br/>
-      <input type="number" id="phoneNumber" required="required" placeholder="شماره تلفن"/>
       <br/>
       <input type="password" id="password" required="required" placeholder="رمز عبور"/>
       <br/>

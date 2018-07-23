@@ -50,6 +50,8 @@ app.use(session({
   }
 }));
 
+// Importing Models and Schemas from ./models/
+require('./models/users');
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname , '../assets/html/index.html'));
@@ -57,12 +59,28 @@ app.get('/', (req, res) => {
 
 // mult can handle multipart and file data requests
 var multer  = require('multer')
-var upload = multer({ dest: 'uploads/' })
+var upload = multer({ dest: '../assets/uploads/' })
 
 
 app.post('/registration',upload.single('image'), (req, res) => {
-  console.log(req.file);
   console.log(req.body);
+  // // TODO: Hash the password before saving into the DB Collection
+  var UserModel = mongoose.model('User');
+  var user = new UserModel({
+    name: req.body.name,
+    email: req.body.email,
+    telegramId: req.body.telegramId,
+    password: req.body.password
+  });
+  user.save((err) => {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      return {success: true};
+    }
+  })
+  // console.log(req.file);
   res.send('');
 });
 
