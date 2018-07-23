@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Registration from './registration';
+import Login from './login'
 
 class App extends Component {
   render() {
@@ -10,4 +11,5 @@ class App extends Component {
   }
 }
 
-ReactDOM.render(<App/>, document.getElementById('main'));
+ReactDOM.render(<App/>, document.getElementById('registration'));
+ReactDOM.render(<Login/>, document.getElementById('login'));

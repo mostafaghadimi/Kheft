@@ -15,7 +15,7 @@ export default class Registration extends Component {
         'Content-Type': 'multipart/form-data'
       }
     };
-
+// TODO: add university, fieldofstudy and other fileds from server/models/users
     var formData = new FormData();
     var imagefile = document.getElementById('profilePicture');
     formData.append('name', document.getElementById('name').value);
@@ -23,9 +23,8 @@ export default class Registration extends Component {
     formData.append('telegramId', document.getElementById('telegramId').value);
     formData.append('password', document.getElementById('password').value);
     formData.append('image', imagefile.files[0]);
-    console.log(formData);
     axios.post('/registration', formData, config).then(function(res) {
-      console.log(res.data + 'res');
+      console.log('Post request has been sent to /registration. :)');
     }).catch(console.error);
   }
 

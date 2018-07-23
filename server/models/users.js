@@ -23,7 +23,7 @@ var userSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
   // university: {
   //   type: String,
   //   required: true
@@ -32,17 +32,17 @@ var userSchema = mongoose.Schema({
   //   type: String,
   //   required: true
   // },
-  // inboxMessages: {
-  //   type: Array
-  // },
-  // submittedBooks:{
-  //   type: Array
-  // },
-  // profilePicture: {
-  //   // TODO: edit the default mode picture
-  //   type: String,
-  //   default: '/'
-  // }
+  inboxMessages: {
+    type: Array
+  },
+  submittedBooks:{
+    type: Array
+  },
+  profilePicture: {
+    // TODO: edit the default mode picture
+    type: String,
+    default: '/'
+  }
 });
 
 var User = mongoose.model('User', userSchema);

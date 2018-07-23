@@ -55,20 +55,6 @@ app.use(session({
 require('./models/users');
 
 app.get('/', (req, res) => {
-  var akbar,
-    akbar2;
-  bcrypt.hash('salam', saltRounds, (err, hash) => {
-    akbar = hash;
-    console.log(akbar);
-  });
-
-  bcrypt.hash('salam', saltRounds, (err, hash) => {
-    akbar = hash;
-  });
-
-  bcrypt.compare(akbar, akbar2, (err, res) => {
-    console.log(akbar, akbar2, res);
-  });
   res.sendFile(path.join(__dirname, '../assets/html/index.html'));
 });
 
@@ -77,15 +63,20 @@ var multer = require('multer')
 var upload = multer({dest: '../assets/uploads/profilePicture'})
 
 app.post('/registration', upload.single('image'), (req, res) => {
-  console.log(req.body);
-  //  TODO: Hash the password before saving into the DB Collection
+  //  Hashing the password to providing security
+  var hashPassword;
+  bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+    hashPassword = hash;
+  });
+
+  // TODO: Captcha!
   var UserModel = mongoose.model('User');
   var user = new UserModel({
     name: req.body.name,
     email: req.body.email,
     telegramId: req.body.telegramId,
-    password: req.body.password
-    // profilePicture: req.files.
+    password: hashPassword,
+    profilePicture: req.files.filename
   });
 
   user.save((err) => {
@@ -98,6 +89,19 @@ app.post('/registration', upload.single('image'), (req, res) => {
   console.log(req.file);
   res.send('');
 });
+
+app.post('/login', (req, res) => {
+  var hashPassword;
+  bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+    hashPassword = hash;
+    // DB Query in email if email exists ...
+    bcrypt.compare('salam', akbar, (err, res) => {
+      console.log(res);
+    });
+    console.log(akbar);
+  });
+})
+
 
 app.get('/logout', (req, res) => {
   if (req.session) {
