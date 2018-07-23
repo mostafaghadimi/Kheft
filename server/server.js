@@ -14,7 +14,7 @@ app.listen(port, serverMsg);
 
 // DataBase using Mongoose because of simplicity and schema
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/KheftKetab', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/KheftKetab', {useNewUrlParser: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -31,13 +31,14 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 // A package for hashing the passwords https://www.npmjs.com/package/bcrypt
 var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 // mapping static files
 app.use('/build', express.static('../build/'));
 app.use('/styles', express.static('../styles/'));
 app.use('/scripts', express.static('../scripts/'));
 app.use('/assets', express.static('../assets/'));
-
+app.use('/profilePicture', express.static('../assets/uploads/profilePicture'));
 
 // Session
 var session = require('express-session');
@@ -54,40 +55,54 @@ app.use(session({
 require('./models/users');
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname , '../assets/html/index.html'));
+  var akbar,
+    akbar2;
+  bcrypt.hash('salam', saltRounds, (err, hash) => {
+    akbar = hash;
+    console.log(akbar);
+  });
+
+  bcrypt.hash('salam', saltRounds, (err, hash) => {
+    akbar = hash;
+  });
+
+  bcrypt.compare(akbar, akbar2, (err, res) => {
+    console.log(akbar, akbar2, res);
+  });
+  res.sendFile(path.join(__dirname, '../assets/html/index.html'));
 });
 
 // mult can handle multipart and file data requests
-var multer  = require('multer')
-var upload = multer({ dest: '../assets/uploads/' })
+var multer = require('multer')
+var upload = multer({dest: '../assets/uploads/profilePicture'})
 
-
-app.post('/registration',upload.single('image'), (req, res) => {
+app.post('/registration', upload.single('image'), (req, res) => {
   console.log(req.body);
-  // // TODO: Hash the password before saving into the DB Collection
+  //  TODO: Hash the password before saving into the DB Collection
   var UserModel = mongoose.model('User');
   var user = new UserModel({
     name: req.body.name,
     email: req.body.email,
     telegramId: req.body.telegramId,
     password: req.body.password
+    // profilePicture: req.files.
   });
+
   user.save((err) => {
-    if(err) {
+    if (err) {
       console.log(err);
-    }
-    else {
+    } else {
       return {success: true};
     }
   })
-  // console.log(req.file);
+  console.log(req.file);
   res.send('');
 });
 
 app.get('/logout', (req, res) => {
   if (req.session) {
     req.session.destroy(function(err) {
-      if(err) {
+      if (err) {
         return next(err);
       } else {
         return res.redirect('/');
@@ -95,7 +110,6 @@ app.get('/logout', (req, res) => {
     });
   }
 });
-
 
 // Response to Requests in separated file
 // var routes = require('./routes.js');
