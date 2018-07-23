@@ -13,13 +13,13 @@ serverMsg = function(err) {
 app.listen(port, serverMsg);
 
 // DataBase using Mongoose because of simplicity and schema
-// var mongoose = require('mongoose');
-// mongoose.connect('mongodb://localhost:27017/KheftKetab', { useNewUrlParser: true });
-// var db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function() {
-//   // we're connected!
-// });
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/KheftKetab', { useNewUrlParser: true });
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  // we're connected!
+});
 
 // In sendFile method to access the directory in which you are you need this part
 var path = require('path');
@@ -36,7 +36,8 @@ var bcrypt = require('bcrypt');
 app.use('/build', express.static('../build/'));
 app.use('/styles', express.static('../styles/'));
 app.use('/scripts', express.static('../scripts/'));
-app.use('/assets', express.static('../assets/'))
+app.use('/assets', express.static('../assets/'));
+
 
 // Session
 var session = require('express-session');
@@ -54,8 +55,13 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname , '../assets/html/index.html'));
 });
 
-app.post('/registration', (req, res) => {
-  console.log('salam:');
+// mult can handle multipart and file data requests
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
+
+app.post('/registration',upload.single('image'), (req, res) => {
+  console.log(req.file);
   console.log(req.body);
   res.send('');
 });

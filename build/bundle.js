@@ -82,10 +82,6 @@ var Registration = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Registration.__proto__ || Object.getPrototypeOf(Registration)).call(this, props));
 
     _this.handleSubmit = _this.handleSubmit.bind(_this);
-    //this.handleChange = this.handleChange.bind(this);
-    // this.state = {
-    //   name: ""
-    // }
     return _this;
   }
 
@@ -93,22 +89,25 @@ var Registration = function (_Component) {
     key: 'handleSubmit',
     value: function handleSubmit(e) {
       e.preventDefault();
-      var data = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phoneNumber: document.getElementById('phoneNumber').value,
-        password: document.getElementById('password').value
+      var config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       };
-      console.log(data);
-      _axios2.default.post('/registration', data).then(function (res) {
-        console.log(res.data);
+
+      var formData = new FormData();
+      var imagefile = document.getElementById('profilePicture');
+      formData.append('name', document.getElementById('name').value);
+      formData.append('email', document.getElementById('email').value);
+      formData.append('telegramId', document.getElementById('telegramId').value);
+      formData.append('phoneNumber', document.getElementById('phoneNumber').value);
+      formData.append('password', document.getElementById('password').value);
+      formData.append('image', imagefile.files[0]);
+      console.log(formData);
+      _axios2.default.post('/registration', formData, config).then(function (res) {
+        console.log(res.data + 'res');
       }).catch(console.error);
     }
-
-    // handleChange (){
-    //   this.setState({name: event.target.value});
-    // }
-
   }, {
     key: 'render',
     value: function render() {
@@ -117,11 +116,15 @@ var Registration = function (_Component) {
         { className: 'registrationForm' },
         _react2.default.createElement('input', { type: 'text', name: 'name', id: 'name', required: 'required', placeholder: '\u0646\u0627\u0645' }),
         _react2.default.createElement('br', null),
-        _react2.default.createElement('input', { type: 'text', id: 'email', required: 'required', placeholder: '\u0627\u06CC\u0645\u06CC\u0644' }),
+        _react2.default.createElement('input', { type: 'email', id: 'email', required: 'required', placeholder: '\u0627\u06CC\u0645\u06CC\u0644' }),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement('input', { type: 'text', id: 'telegramId', required: 'required', placeholder: '\u0622\u06CC\u200C\u062F\u06CC \u062A\u0644\u06AF\u0631\u0627\u0645' }),
         _react2.default.createElement('br', null),
         _react2.default.createElement('input', { type: 'number', id: 'phoneNumber', required: 'required', placeholder: '\u0634\u0645\u0627\u0631\u0647 \u062A\u0644\u0641\u0646' }),
         _react2.default.createElement('br', null),
         _react2.default.createElement('input', { type: 'password', id: 'password', required: 'required', placeholder: '\u0631\u0645\u0632 \u0639\u0628\u0648\u0631' }),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement('input', { type: 'file', id: 'profilePicture' }),
         _react2.default.createElement('br', null),
         _react2.default.createElement(
           'button',

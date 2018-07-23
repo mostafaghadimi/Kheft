@@ -6,41 +6,45 @@ export default class Registration extends Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
-    //this.handleChange = this.handleChange.bind(this);
-    // this.state = {
-    //   name: ""
-    // }
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    var data = {
-      name : document.getElementById('name').value,
-      email:document.getElementById('email').value,
-      phoneNumber : document.getElementById('phoneNumber').value,
-      password : document.getElementById('password').value
+    var config = {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     };
-    console.log(data);
-    axios.post('/registration', data)
-    .then(function(res){
-      console.log(res.data);
+
+    var formData = new FormData();
+    var imagefile = document.getElementById('profilePicture');
+    formData.append('name',document.getElementById('name').value);
+    formData.append('email',document.getElementById('email').value);
+    formData.append('telegramId',document.getElementById('telegramId').value);
+    formData.append('phoneNumber',document.getElementById('phoneNumber').value);
+    formData.append('password',document.getElementById('password').value);
+    formData.append('image', imagefile.files[0]);
+    console.log(formData);
+    axios.post('/registration', formData,config).then(function(res){
+      console.log(res.data+'res');
     }).catch(console.error);
   }
 
-  // handleChange (){
-  //   this.setState({name: event.target.value});
-  // }
   render() {
     return (<form className="registrationForm">
       <input type="text" name="name" id="name" required="required" placeholder="نام" />
       <br/>
-      <input type="text" id="email" required="required" placeholder="ایمیل"/>
+      <input type="email" id="email" required="required" placeholder="ایمیل"/>
+      <br/>
+      <input type="text" id="telegramId" required="required" placeholder="آی‌دی تلگرام"/>
       <br/>
       <input type="number" id="phoneNumber" required="required" placeholder="شماره تلفن"/>
       <br/>
       <input type="password" id="password" required="required" placeholder="رمز عبور"/>
       <br/>
-      <button className="registerButton" onClick={this.handleSubmit} >عضویت</button>
+      <input type="file" id="profilePicture"/>
+      <br/>
+      <button className="registerButton" onClick={this.handleSubmit}>عضویت</button>
     </form>)
   };
 }
