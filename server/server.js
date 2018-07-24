@@ -53,8 +53,10 @@ app.use(session({
 
 // Importing Models and Schemas from ./models/
 require('./models/users');
+var UserModel = mongoose.model('User');
 
 app.get('/', (req, res) => {
+
   res.sendFile(path.join(__dirname, '../assets/html/index.html'));
 });
 
@@ -70,14 +72,7 @@ app.post('/registration', upload.single('image'), (req, res) => {
   });
 
   // TODO: Captcha!
-  var UserModel = mongoose.model('User');
-  var user = new UserModel({
-    name: req.body.name,
-    email: req.body.email,
-    telegramId: req.body.telegramId,
-    password: hashPassword,
-    profilePicture: req.files.filename
-  });
+  var user = new UserModel({name: req.body.name, email: req.body.email, telegramId: req.body.telegramId, password: hashPassword, profilePicture: req.files.filename});
 
   user.save((err) => {
     if (err) {
@@ -94,14 +89,30 @@ app.post('/login', (req, res) => {
   var hashPassword;
   bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
     hashPassword = hash;
-    // DB Query in email if email exists ...
-    bcrypt.compare('salam', akbar, (err, res) => {
-      console.log(res);
-    });
-    console.log(akbar);
+    UserModel.find({email: req.body.email}, (err, data) =>{
+      if (err) {
+        // TODO: prevent server from crashing https://stackoverflow.com/questions/51490740/prevent-server-from-crashing-while-interacting-with-db/51490822?noredirect=1#comment89950381_51490822
+        console.log(err);
+
+      }
+      else{
+        var savedPassword;
+        data.map((res) => {
+          savedPassword = res.password ;
+        });
+        bcrypt.compare(hashPassword, savedPassword, (err, dataIsCorrect) => {
+          if (dataIsCorrect) {
+            // TODO: session true! :)
+          }
+          else {
+            // TODO: return to the login
+          }
+        })
+      }
+    })
+
   });
 })
-
 
 app.get('/logout', (req, res) => {
   if (req.session) {
