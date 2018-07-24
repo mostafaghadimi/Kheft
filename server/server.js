@@ -55,14 +55,14 @@ app.use(session({
 require('./models/users');
 var UserModel = mongoose.model('User');
 
-app.get('/', (req, res) => {
-
-  res.sendFile(path.join(__dirname, '../assets/html/index.html'));
-});
-
 // mult can handle multipart and file data requests
 var multer = require('multer')
 var upload = multer({dest: '../assets/uploads/profilePicture'})
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../assets/html/index.html'));
+});
 
 app.post('/registration', upload.single('image'), (req, res) => {
   //  Hashing the password to providing security
@@ -94,6 +94,9 @@ app.post('/login', (req, res) => {
         // TODO: prevent server from crashing https://stackoverflow.com/questions/51490740/prevent-server-from-crashing-while-interacting-with-db/51490822?noredirect=1#comment89950381_51490822
         console.log(err);
 
+      }
+      else if (!data || data.length < 0) {
+        console.log("There is no such email/user exists");
       }
       else{
         var savedPassword;
