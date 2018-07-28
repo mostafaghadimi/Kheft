@@ -5,12 +5,10 @@ var bookSchema = mongoose.Schema({
     required: true,
     trim: true
   },
-  subject:{
-    type: String,
-    required : true
-  },
   picture:{
     type: String,
+    // TODO: change the default
+    default: '/'
   },
   author:{
     type: String,
@@ -27,6 +25,10 @@ var bookSchema = mongoose.Schema({
   ownerId:{
     type: String,
     required:true
+  },
+  major: {
+    type: Array,
+    required: true
   }
 });
 

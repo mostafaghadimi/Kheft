@@ -21,6 +21,7 @@ export default class Registration extends Component {
   function onChange(value) {
     console.log("Captcha value:", value);
   }
+  
 // TODO: add university, fieldofstudy and other fileds from server/models/users
     var formData = new FormData();
     var imagefile = document.getElementById('profilePicture');
