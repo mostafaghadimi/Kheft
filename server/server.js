@@ -18,7 +18,7 @@ mongoose.connect('mongodb://localhost:27017/KheftKetab', {useNewUrlParser: true}
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  // we're connected!
+  console.log('db connected!');
 });
 
 // In sendFile method to access the directory in which you are you need this part
@@ -31,7 +31,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 // A package for hashing the passwords https://www.npmjs.com/package/bcrypt
 var bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 // mapping static files
 app.use('/build', express.static('../build/'));
@@ -65,45 +64,48 @@ app.get('/', (req, res) => {
 });
 
 app.post('/registration', upload.single('image'), (req, res) => {
-  //  Hashing the password to providing security
-  var hashPassword;
-  bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-    hashPassword = hash;
+  var profile = 'default';
+  if(req.file !== undefined){
+    profile = req.file.filename;
+  }
+
+  bcrypt.hash(req.body.password, 10, function(err, hash) {
+    var user = new UserModel({name: req.body.name, email: req.body.email, telegramId: req.body.telegramId, password: hash, profilePicture: profile});
+    user.save((err) => {
+      if (err) {
+        console.log('ERRRRRRR : ',err);
+      } else {
+        console.log('user saved!');
+        req.session.userId = user._id;
+        console.log(req.session.userId);
+        return {success: true};
+      }
+    });
+    console.log(user);
+    res.send('');
   });
 
   // TODO: Captcha!
-  var user = new UserModel({name: req.body.name, email: req.body.email, telegramId: req.body.telegramId, password: hashPassword, profilePicture: req.files.filename});
-
-  user.save((err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      return {success: true};
-    }
-  })
-  console.log(req.file);
-  res.send('');
 });
 
 app.post('/login', (req, res) => {
-  var hashPassword;
-  bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-    hashPassword = hash;
+  res.send('');
+  bcrypt.hash(req.body.password, 10, (err, hash) => {
     UserModel.find({email: req.body.email}, (err, data) =>{
+      console.log(data);
       if (err) {
         // TODO: prevent server from crashing https://stackoverflow.com/questions/51490740/prevent-server-from-crashing-while-interacting-with-db/51490822?noredirect=1#comment89950381_51490822
         console.log(err);
-
       }
       else if (!data || data.length < 0) {
-        console.log("There is no such email/user exists");
+        console.log("There is no such email/user");
       }
       else{
         var savedPassword;
         data.map((res) => {
           savedPassword = res.password ;
         });
-        bcrypt.compare(hashPassword, savedPassword, (err, dataIsCorrect) => {
+        bcrypt.compare(hash, savedPassword, (err, dataIsCorrect) => {
           if (dataIsCorrect) {
             // TODO: session true! :)
           }

@@ -7,7 +7,7 @@ export default class Registration extends Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // this.onChange = this.onChange.bind(this);
+    //this.onChange = this.onChange.bind(this);
   }
 
   handleSubmit(e) {
@@ -17,10 +17,6 @@ export default class Registration extends Component {
         'Content-Type': 'multipart/form-data'
       }
     };
-
-  function onChange(value) {
-    console.log("Captcha value:", value);
-  }
 // TODO: add university, fieldofstudy and other fileds from server/models/users
     var formData = new FormData();
     var imagefile = document.getElementById('profilePicture');
@@ -33,6 +29,10 @@ export default class Registration extends Component {
       console.log('Post request has been sent to /registration. :)');
     }).catch(console.error);
   }
+
+  // onChange(value) {
+  //   console.log("Captcha value:", value);
+  // }
 
   render() {
     return (<form className="registrationForm">
@@ -54,5 +54,6 @@ export default class Registration extends Component {
         />
       <button className="registerButton" onClick={this.handleSubmit}>عضویت</button>
     </form>)
+
   };
 }
