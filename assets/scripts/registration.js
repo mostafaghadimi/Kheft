@@ -17,14 +17,9 @@ export default class Registration extends Component {
         'Content-Type': 'multipart/form-data'
       }
     };
-<<<<<<< HEAD
-=======
-
   function onChange(value) {
     console.log("Captcha value:", value);
   }
-  
->>>>>>> e478e483ff8ade307b7e64f7cb4a6a5ce0b9f196
 // TODO: add university, fieldofstudy and other fileds from server/models/users
     var formData = new FormData();
     var imagefile = document.getElementById('profilePicture');

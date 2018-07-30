@@ -3,7 +3,7 @@
   margin: 0;
   background-color: 'black' !important;
   border: none;
-  font-family: 'B Yekan'
+  /* font-family: 'B Yekan' */
 }
 
 .buttons {
@@ -24,4 +24,11 @@
   color: white;
   border-radius: 2px;
   padding: 3px;
+}
+
+
+#components-layout-demo-responsive .logo {
+  height: 32px;
+  background: rgba(255,255,255,.2);
+  margin: 16px;
 }
