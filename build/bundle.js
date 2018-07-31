@@ -191,7 +191,7 @@ var Registration = function (_Component) {
       formData.append('password', document.getElementById('password').value);
       formData.append('image', imagefile.files[0]);
       _axios2.default.post('/registration', formData, config).then(function (res) {
-        console.log('Post request has been sent to /registration. :)');
+        console.log('res : ', res.data);
       }).catch(console.error);
     }
 
