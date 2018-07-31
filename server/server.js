@@ -21,9 +21,6 @@ db.once('open', function() {
   console.log('db connected!');
 });
 
-// In sendFile method to access the directory in which you are you need this part
-var path = require('path');
-
 // BodyParser is the package to have access on request parameters sent from client
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -39,17 +36,16 @@ app.use('/scripts', express.static('../scripts/'));
 app.use('/assets', express.static('../assets/'));
 app.use('/profilePicture', express.static('../assets/uploads/profilePicture'));
 
-// Session
+// // Session
+// var MongoStore = require('connect-mongo')(session);
 var session = require('express-session');
 app.use(session({
   secret: 'KheftKetab.ir',
   saveUninitialized: false,
   resave: true,
-  cookie: {
-    secure: true
-  }
 }));
 
+<<<<<<< HEAD
 // Importing Models and Schemas from ./models/
 require('./models/users');
 var UserModel = mongoose.model('User');
@@ -131,6 +127,8 @@ app.get('/logout', (req, res) => {
   }
 });
 
+=======
+>>>>>>> ac9a56f106689be86f339c308b9682a7b0f61295
 // Response to Requests in separated file
-// var routes = require('./routes.js');
-// app.use('/', routes);
+var routes = require('./routes');
+app.use('/', routes);

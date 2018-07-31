@@ -17,10 +17,14 @@ export default class Registration extends Component {
         'Content-Type': 'multipart/form-data'
       }
     };
+<<<<<<< HEAD
   function onChange(value) {
     console.log("Captcha value:", value);
   }
 // TODO: add university, fieldofstudy and other fileds from server/models/users
+=======
+{/*// TODO: add university, fieldofstudy and other fileds from server/models/users*/}
+>>>>>>> ac9a56f106689be86f339c308b9682a7b0f61295
     var formData = new FormData();
     var imagefile = document.getElementById('profilePicture');
     formData.append('name', document.getElementById('name').value);
@@ -29,7 +33,7 @@ export default class Registration extends Component {
     formData.append('password', document.getElementById('password').value);
     formData.append('image', imagefile.files[0]);
     axios.post('/registration', formData, config).then(function(res) {
-      console.log('Post request has been sent to /registration. :)');
+      console.log('res : ',res.data);
     }).catch(console.error);
   }
 
