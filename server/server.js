@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 
+var path = require('path');
+
 // Running Server On the defined port
 port = 3000;
 serverMsg = function(err) {
@@ -45,7 +47,6 @@ app.use(session({
   resave: true,
 }));
 
-<<<<<<< HEAD
 // Importing Models and Schemas from ./models/
 require('./models/users');
 var UserModel = mongoose.model('User');
@@ -127,8 +128,7 @@ app.get('/logout', (req, res) => {
   }
 });
 
-=======
->>>>>>> ac9a56f106689be86f339c308b9682a7b0f61295
+
 // Response to Requests in separated file
 var routes = require('./routes');
 app.use('/', routes);

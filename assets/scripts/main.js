@@ -21,7 +21,6 @@ import ReactDOM from 'react-dom';
 // ReactDOM.render(<WrappedRegistrationForm />, document.getElementById('registrationFormAntd'));
 
 import { Layout, Menu, Icon } from 'antd';
-import 
 const { Header, Content, Footer, Sider } = Layout;
 
 ReactDOM.render(
@@ -65,5 +64,3 @@ ReactDOM.render(
     </Layout>
   </Layout>,
   document.getElementById('main'));
-
-console.log(antd);
