@@ -131,6 +131,10 @@ app.get('/logout', (req, res) => {
   }
 });
 
+app.get('*', function(req, res){
+   res.sendFile(path.join(__dirname, '../assets/html/not_found.html'));
+});
+
 // Response to Requests in separated file
 // var routes = require('./routes.js');
 // app.use('/', routes);
