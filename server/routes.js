@@ -5,6 +5,7 @@ var path = require('path');
 
 // Importing Models and Schemas from ./models/
 var User = require('./models/users');
+var Book = require('./models/book');
 
 // mult can handle multipart and file data requests
 var multer = require('multer');
@@ -29,7 +30,6 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
     password: req.body.password,
     profilePicture : req.file === undefined ? 'default' : req.file.filename
   }
-  // // TODO: check for email existance
 
   User.create(userData, function (error, user) {
     if (error) {
@@ -38,12 +38,10 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
     } else {
       req.session.userId = user._id;
       console.log('user id : ',user._id);
-      res.setHeader("Content-Type", "text/html");
       return res.redirect('/home');
     }
   });
   console.log(userData);
-
   // TODO: Captcha!
 });
 
@@ -56,7 +54,7 @@ router.post('/login', (req, res,next) => {
         return next(err);
       } else {
         req.session.userId = user._id;
-        return res.redirect(302,'/home');
+        return res.send('/home');
       }
     });
   }else {
@@ -64,6 +62,28 @@ router.post('/login', (req, res,next) => {
     err.status = 400;
     return next(err);
   }
+});
+
+router.post('/bookSubmit',upload.single('picture'),(req,res,next) => {
+  console.log(req.body);
+  var bookData = {
+    name : req.body.name,
+    author : req.body.author,
+    year : req.body.year,
+    publication : req.body.publication,
+    ownerId : req.session.userId,
+    picture : req.file === undefined ? 'default' : req.file.filename
+  }
+
+  Book.create(bookData, function (error, book) {
+    if (error) {
+      return next(error);
+    } else {
+      console.log('book id : ',book._id);
+      return res.redirect('/home');
+    }
+  });
+  console.log(bookData);
 });
 
 router.get('/home', function (req, res, next) {
@@ -78,7 +98,7 @@ router.get('/home', function (req, res, next) {
           return next(err);
         } else {
           console.log('home : ',req.session.userId);
-          return res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>'
+          res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>'
            + user.email + '<br><a type="button" href="/logout">Logout</a>');
         }
       }
@@ -93,6 +113,45 @@ router.get('/logout', (req, res) => {
       } else {
         return res.redirect('/');
       }
+    });
+  }
+});
+
+router.get('/users/:id',(req,res,next) => {
+  if (req.session.userId === undefined){
+    var err = new Error('Not authorized!');
+    err.status = 400;
+    return next(err);
+  }else {
+    User.findOne({ telegramId: req.params.id }).exec(function(err,user){
+      if (err) {
+        return next(err)
+      } else if (!user) {
+        var err = new Error('User not found.');
+        err.status = 401;
+        return next(err);
+      }
+      res.json(user);
+      next();
+    });
+  }
+});
+
+router.get('/books/:id',(req,res,next) => {
+  if (req.session.userId === undefined){
+    var err = new Error('Not authorized!');
+    err.status = 400;
+    return next(err);
+  }else {
+    Book.findOne({ _id : req.params.id }).exec(function(err,book){
+      if (err) {
+        return next(err)
+      } else if (!book) {
+        var err = new Error('Book not found.');
+        err.status = 401;
+        return next(err);
+      }
+      res.json(book);
     });
   }
 });

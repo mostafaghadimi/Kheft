@@ -5,11 +5,6 @@ var bookSchema = mongoose.Schema({
     required: true,
     trim: true
   },
-  picture:{
-    type: String,
-    // TODO: change the default
-    default: '/'
-  },
   author:{
     type: String,
     required:true
@@ -26,10 +21,14 @@ var bookSchema = mongoose.Schema({
     type: String,
     required:true
   },
-  major: {
-    type: Array,
-    required: true
-  }
+  // major: {
+  //   type: Array,
+  //   required: true
+  // },
+  picture:{
+    type: String,
+    default: 'default'
+  },
 });
 
 var Book = mongoose.model('Book', bookSchema);
