@@ -42,6 +42,10 @@ var userSchema = mongoose.Schema({
   profilePicture: {
     type: String,
     default: 'default'
+  },
+  confirmed : {
+    type : Boolean,
+    required : true
   }
 });
 

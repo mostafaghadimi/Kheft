@@ -8,14 +8,14 @@ import BookSubmit from './bookSubmit';
 class App extends Component {
   render() {
     return (
-      // <Registration/>
-      <Login/>
+      <Registration/>
+      //<Login/>
     )
   }
 }
 
 ReactDOM.render(<App/>, document.getElementById('registration'));
-ReactDOM.render(<BookSubmit/>,document.getElementById('bookSubmit'));
+//ReactDOM.render(<BookSubmit/>,document.getElementById('bookSubmit'));
 
 // const WrappedRegistrationForm = Form.create()(RegistrationFrom);
 // ReactDOM.render(<WrappedRegistrationForm />, document.getElementById('registrationFormAntd'));

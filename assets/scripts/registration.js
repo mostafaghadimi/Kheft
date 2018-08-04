@@ -26,6 +26,7 @@ export default class Registration extends Component {
     formData.append('image', imagefile.files[0]);
     axios.post('/registration', formData, config).then(function(res) {
       console.log('res : ',res.data);
+      window.location = res.data.redirect;
     }).catch(console.error);
   }
 

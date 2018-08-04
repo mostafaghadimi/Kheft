@@ -149,6 +149,7 @@ var Login = function (_Component) {
       };
       _axios2.default.post('/login', data).then(function (res) {
         console.log('Post request has been sent to /login');
+        window.location = res.data.redirect;
       }).catch(console.error);
     }
   }, {
@@ -220,10 +221,9 @@ var App = function (_Component) {
   _createClass(App, [{
     key: 'render',
     value: function render() {
-      return (
-        // <Registration/>
-        _react2.default.createElement(_login2.default, null)
-      );
+      return _react2.default.createElement(_registration2.default, null)
+      //<Login/>
+      ;
     }
   }]);
 
@@ -231,7 +231,7 @@ var App = function (_Component) {
 }(_react.Component);
 
 _reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('registration'));
-_reactDom2.default.render(_react2.default.createElement(_bookSubmit2.default, null), document.getElementById('bookSubmit'));
+//ReactDOM.render(<BookSubmit/>,document.getElementById('bookSubmit'));
 
 // const WrappedRegistrationForm = Form.create()(RegistrationFrom);
 // ReactDOM.render(<WrappedRegistrationForm />, document.getElementById('registrationFormAntd'));
@@ -345,6 +345,7 @@ var Registration = function (_Component) {
       formData.append('image', imagefile.files[0]);
       _axios2.default.post('/registration', formData, config).then(function (res) {
         console.log('res : ', res.data);
+        window.location = res.data.redirect;
       }).catch(console.error);
     }
 

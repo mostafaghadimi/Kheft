@@ -17,6 +17,7 @@ export default class Login extends Component {
     };
     axios.post('/login', data).then(function(res) {
       console.log('Post request has been sent to /login');
+      window.location = res.data.redirect;
     }).catch(console.error);
   }
 

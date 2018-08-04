@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 // In sendFile method to access the directory in which you are you need this part
 var path = require('path');
+var nodemailer = require('nodemailer');
 
 // Importing Models and Schemas from ./models/
 var User = require('./models/users');
@@ -37,12 +38,48 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
       return next(error);
     } else {
       req.session.userId = user._id;
-      console.log('user id : ',user._id);
-      return res.redirect('/home');
+      console.log(userData);
+
+      // send verification email
+      var transporter = nodemailer.createTransport({
+         service: 'Sendgrid',
+         auth: { user: 'soorism' , pass: 'ss98aven77' }
+      });
+      var mailOptions = { from: 'no-reply@KheftKetab.com', to: user.email,
+        subject: 'Account Verification Token', text: 'Hello,\n\n' +
+          'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host
+            + '\/confirmation\/' + user._id + '.\n' };
+            console.log(mailOptions.text);
+      transporter.sendMail(mailOptions, function (err) {
+        if (err) {
+          console.log('error :',err.message)
+          return res.status(500).send({ msg: err.message });
+        }
+        return res.status(200).send('A verification email has been sent to ' + user.email + '.');
+      });
+
+      //return res.redirect('/home');
     }
   });
-  console.log(userData);
   // TODO: Captcha!
+});
+
+router.get('/confirmation/:id',(req,res,next) => {
+  User.findOne({ _id: req.params.id })
+    .exec(function (err, user) {
+      if (err) {
+        return next(err)
+      } else if (!user) {
+        var err = new Error('User not found.');
+        err.status = 401;
+        return next(err);
+      }
+      user.set({ confirmed: true });
+      user.save(function (err) {
+        if (err) return next(err);
+        res.send('user confirmed');
+      });
+    });
 });
 
 router.post('/login', (req, res,next) => {
@@ -54,7 +91,8 @@ router.post('/login', (req, res,next) => {
         return next(err);
       } else {
         req.session.userId = user._id;
-        return res.send('/home');
+        var redir = { redirect: "/home" };
+        return res.json(redir);
       }
     });
   }else {
@@ -87,6 +125,9 @@ router.post('/bookSubmit',upload.single('picture'),(req,res,next) => {
 });
 
 router.get('/home', function (req, res, next) {
+  if(req.session.userId === undefined){
+    return res.redirect('/');
+  }
   User.findById(req.session.userId)
     .exec(function (error, user) {
       if (error) {
@@ -117,7 +158,7 @@ router.get('/logout', (req, res) => {
   }
 });
 
-router.get('/users/:id',(req,res,next) => {
+router.get('api/users/:id',(req,res,next) => {
   if (req.session.userId === undefined){
     var err = new Error('Not authorized!');
     err.status = 400;
@@ -131,13 +172,12 @@ router.get('/users/:id',(req,res,next) => {
         err.status = 401;
         return next(err);
       }
-      res.json(user);
-      next();
+      return res.json(user);
     });
   }
 });
 
-router.get('/books/:id',(req,res,next) => {
+router.get('/api/books/:id',(req,res,next) => {
   if (req.session.userId === undefined){
     var err = new Error('Not authorized!');
     err.status = 400;
@@ -151,7 +191,7 @@ router.get('/books/:id',(req,res,next) => {
         err.status = 401;
         return next(err);
       }
-      res.json(book);
+      return res.json(book);
     });
   }
 });
