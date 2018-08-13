@@ -3,10 +3,13 @@ var router = express.Router();
 // In sendFile method to access the directory in which you are you need this part
 var path = require('path');
 var nodemailer = require('nodemailer');
+var crypto = require('crypto');
+var bcrypt = require('bcrypt');
 
 // Importing Models and Schemas from ./models/
 var User = require('./models/users');
 var Book = require('./models/book');
+var Token = require('./models/token');
 
 // mult can handle multipart and file data requests
 var multer = require('multer');
@@ -24,60 +27,109 @@ router.get('/', (req, res) => {
 
 
 router.post('/registration', upload.single('image'), (req, res, next) => {
+
+  var hash = bcrypt.hashSync(req.body.password, 10);
   var userData = {
     name : req.body.name,
     email: req.body.email,
     telegramId : req.body.telegramId,
-    password: req.body.password,
+    password: hash,
     profilePicture : req.file === undefined ? 'default' : req.file.filename
   }
 
   User.create(userData, function (error, user) {
     if (error) {
-      res.send('email already exists.');
+      res.status(400).send('email already exists.');
       return next(error);
     } else {
       req.session.userId = user._id;
-      console.log(userData);
+      console.log(user);
 
-      // send verification email
-      var transporter = nodemailer.createTransport({
-         service: 'Sendgrid',
-         auth: { user: 'soorism' , pass: 'ss98aven77' }
-      });
-      var mailOptions = { from: 'no-reply@KheftKetab.com', to: user.email,
-        subject: 'Account Verification Token', text: 'Hello,\n\n' +
-          'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host
-            + '\/confirmation\/' + user._id + '.\n' };
-            console.log(mailOptions.text);
-      transporter.sendMail(mailOptions, function (err) {
-        if (err) {
-          console.log('error :',err.message)
+
+      var tokenData = {
+        _userId: user._id,
+        token: crypto.randomBytes(16).toString('hex')
+      };
+
+      Token.create(tokenData,function(error,token){
+        if(error){
           return res.status(500).send({ msg: err.message });
         }
-        return res.status(200).send('A verification email has been sent to ' + user.email + '.');
+        var transporter = nodemailer.createTransport({
+           service: 'Sendgrid',
+           auth: { user: 'soorism' , pass: 'ss98aven77' }
+        });
+        var mailOptions = { from: 'no-reply@KheftKetab.com', to: user.email,
+          subject: 'Account Verification Token', text: 'Hello,\n\n' +
+            'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host
+              + '\/confirmation\/' + token.token + '.\n' };
+              console.log(mailOptions.text);
+        transporter.sendMail(mailOptions, function (err) {
+          if (err) {
+            console.log('error :',err.message)
+            return res.status(500).send({ msg: err.message });
+          }
+          return res.status(200).send('A verification email has been sent to ' + user.email + '.');
+        });
       });
-
-      //return res.redirect('/home');
     }
   });
   // TODO: Captcha!
 });
 
-router.get('/confirmation/:id',(req,res,next) => {
-  User.findOne({ _id: req.params.id })
-    .exec(function (err, user) {
+router.get('/token/resend',(req,res,next) => {
+  User.findOne({ _id: req.session.userId }, function (err, user){
+    if(err) {
+      return next(err);
+    }
+    if (!user){
+      var err = Error('User not found');
+      err.status = 400;
+      return next(err);
+    }
+    var tokenData = {
+      _userId: user._id,
+      token: crypto.randomBytes(16).toString('hex')
+    };
+
+    token.save(function (err) {
+      if (err) { return res.status(500).send({ msg: err.message }); }
+
+        // Send the email
+      var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
+      var mailOptions = { from: 'no-reply@KheftKetab.com', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' };
+      transporter.sendMail(mailOptions, function (err) {
+        if (err) { return res.status(500).send({ msg: err.message }); }
+        res.status(200).send('A verification email has been sent to ' + user.email + '.');
+      });
+    });
+
+  });
+});
+
+router.get('/confirmation/:token',(req,res,next) => {
+  Token.findOne({ token: req.params.token })
+    .exec(function (err, token) {
       if (err) {
         return next(err)
-      } else if (!user) {
-        var err = new Error('User not found.');
+      } else if (!token) {
+        var err = new Error('Token not found.');
         err.status = 401;
         return next(err);
       }
-      user.set({ confirmed: true });
-      user.save(function (err) {
-        if (err) return next(err);
-        res.send('user confirmed');
+
+      User.findOne({ _id: token._userId }, function (err, user) {
+        if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
+        if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
+
+            // Verify and save the user
+        user.verified = true;
+        user.save(function (err) {
+          if (err) {
+            return res.status(500).send({ msg: err.message });
+          }
+          res.status(200).send("The account has been verified. Please log in.");
+        });
       });
     });
 });
@@ -85,15 +137,23 @@ router.get('/confirmation/:id',(req,res,next) => {
 router.post('/login', (req, res,next) => {
   if (req.body.email && req.body.password){
     User.authenticate(req.body.email, req.body.password, function (error, user) {
-      if (error || !user) {
-        var err = new Error('Wrong email or password.');
+      if (error){
+        console.log(error);
+        return next(error);
+      }
+      if (!user) {
+        var err = new Error('Wrong password.');
         err.status = 401;
         return next(err);
-      } else {
-        req.session.userId = user._id;
-        var redir = { redirect: "/home" };
-        return res.json(redir);
       }
+      req.session.userId = user._id;
+      if (!user.verified){
+        var err = new Error('This account has not been verified');
+        err.status = 401;
+        return next(err);
+      }
+      var redir = { redirect: "/home" };
+      return res.json(redir);
     });
   }else {
     var err = new Error('All fields required.');
@@ -137,9 +197,13 @@ router.get('/home', function (req, res, next) {
           var err = new Error('Not authorized! Go back!');
           err.status = 400;
           return next(err);
+        } else if(!user.verified){
+          var err = Error('This account is not verified');
+          err.status = 400;
+          return next(err);
         } else {
           console.log('home : ',req.session.userId);
-          res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>'
+          res.send('<h1>Name: </h1>' + user.name + '<h2>Mail: </h2>'
            + user.email + '<br><a type="button" href="/logout">Logout</a>');
         }
       }
@@ -158,7 +222,7 @@ router.get('/logout', (req, res) => {
   }
 });
 
-router.get('api/users/:id',(req,res,next) => {
+router.get('/api/users/:id',(req,res,next) => {
   if (req.session.userId === undefined){
     var err = new Error('Not authorized!');
     err.status = 400;

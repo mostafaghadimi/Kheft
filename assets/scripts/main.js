@@ -9,13 +9,12 @@ class App extends Component {
   render() {
     return (
       <Registration/>
-      //<Login/>
     )
   }
 }
 
 ReactDOM.render(<App/>, document.getElementById('registration'));
-//ReactDOM.render(<BookSubmit/>,document.getElementById('bookSubmit'));
+ReactDOM.render(<Login/>,document.getElementById('login'));
 
 // const WrappedRegistrationForm = Form.create()(RegistrationFrom);
 // ReactDOM.render(<WrappedRegistrationForm />, document.getElementById('registrationFormAntd'));

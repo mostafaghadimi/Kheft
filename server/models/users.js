@@ -43,9 +43,10 @@ var userSchema = mongoose.Schema({
     type: String,
     default: 'default'
   },
-  confirmed : {
+  verified : {
     type : Boolean,
-    required : true
+    required : true,
+    default : false
   }
 });
 
@@ -53,7 +54,7 @@ userSchema.statics.authenticate = function (email, password, callback) {
   User.findOne({ email: email })
     .exec(function (err, user) {
       if (err) {
-        return callback(err)
+        return callback(err);
       } else if (!user) {
         var err = new Error('User not found.');
         err.status = 401;
@@ -63,22 +64,23 @@ userSchema.statics.authenticate = function (email, password, callback) {
         if (result === true) {
           return callback(null, user);
         } else {
+          console.log('password incorrect : \''+password);
           return callback();
         }
       })
     });
 }
 
-userSchema.pre('save', function (next) {
-  var user = this;
-  bcrypt.hash(user.password, 10, function (err, hash){
-    if (err) {
-      return next(err);
-    }
-    user.password = hash;
-    next();
-  })
-});
+// userSchema.pre('save', function (next) {
+//   var user = this;
+//   bcrypt.hash(user.password, 10, function (err, hash){
+//     if (err) {
+//       return next(err);
+//     }
+//     user.password = hash;
+//     next();
+//   })
+// });
 
 var User = mongoose.model('User', userSchema);
 module.exports = User;

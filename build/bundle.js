@@ -221,9 +221,7 @@ var App = function (_Component) {
   _createClass(App, [{
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(_registration2.default, null)
-      //<Login/>
-      ;
+      return _react2.default.createElement(_registration2.default, null);
     }
   }]);
 
@@ -231,7 +229,7 @@ var App = function (_Component) {
 }(_react.Component);
 
 _reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('registration'));
-//ReactDOM.render(<BookSubmit/>,document.getElementById('bookSubmit'));
+_reactDom2.default.render(_react2.default.createElement(_login2.default, null), document.getElementById('login'));
 
 // const WrappedRegistrationForm = Form.create()(RegistrationFrom);
 // ReactDOM.render(<WrappedRegistrationForm />, document.getElementById('registrationFormAntd'));
