@@ -1,14 +1,11 @@
 var bcrypt = require('bcrypt');
 var mongoose = require('mongoose');
+
 var userSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true
-  },
-  credit:{
-    type: Number,
-    default:0
   },
   email: {
     type: String,
@@ -16,23 +13,27 @@ var userSchema = mongoose.Schema({
     required: true,
     trim: true
   },
-  telegramId:{
-    type: String,
-    trim: true,
-    required: true
+  credit:{
+    type: Number,
+    default:0
   },
   password: {
     type: String,
     required: true
   },
-  // university: {
-  //   type: String,
-  //   required: true
-  // },
-  // fieldOfStudy: {
-  //   type: String,
-  //   required: true
-  // },
+  telegramId:{
+    type: String,
+    trim: true,
+    required: true
+  },
+  university: {
+    type: String,
+    required: true
+  },
+  fieldOfStudy: {
+    type: String,
+    required: true
+  },
   inboxMessages: {
     type: Array
   },
@@ -45,7 +46,6 @@ var userSchema = mongoose.Schema({
   },
   verified : {
     type : Boolean,
-    required : true,
     default : false
   }
 });
@@ -70,17 +70,6 @@ userSchema.statics.authenticate = function (email, password, callback) {
       })
     });
 }
-
-// userSchema.pre('save', function (next) {
-//   var user = this;
-//   bcrypt.hash(user.password, 10, function (err, hash){
-//     if (err) {
-//       return next(err);
-//     }
-//     user.password = hash;
-//     next();
-//   })
-// });
 
 var User = mongoose.model('User', userSchema);
 module.exports = User;
