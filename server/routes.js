@@ -1,50 +1,46 @@
 var express = require('express');
 var router = express.Router();
-// In sendFile method to access the directory in which you are you need this part
-var path = require('path');
-var nodemailer = require('nodemailer');
-var crypto = require('crypto');
-var bcrypt = require('bcrypt');
+
+var path = require('path'); // JS built-in method used for address mode! 
+
+var nodemailer = require('nodemailer'); // Registration verification Email sender
+var crypto = require('crypto'); // token creator
+
+var bcrypt = require('bcrypt'); // Hashing user password in registration
 
 // Importing Models and Schemas from ./models/
 var User = require('./models/users');
 var Book = require('./models/book');
 var Token = require('./models/token');
 
-// mult can handle multipart and file data requests
-var multer = require('multer');
-var upload = multer({dest: '../assets/uploads/profilePicture'});
-
+var multer = require('multer'); // recieve images from user
+var upload = multer({dest: '../assets/uploads/profilePicture'}); //upload directory
 
 router.get('/', (req, res) => {
-  if(req.session.userId !== undefined){
-    res.redirect('/home');
-  }
-  else {
     res.sendFile(path.join(__dirname, '../assets/html/index.html'));
-  }
 });
 
-
 router.post('/registration', upload.single('image'), (req, res, next) => {
-
+  //TODO: translate the messages and using JSON Web Token to create token :). change the current email and password
   var hash = bcrypt.hashSync(req.body.password, 10);
   var userData = {
     name : req.body.name,
     email: req.body.email,
-    telegramId : req.body.telegramId,
     password: hash,
+    university: req.body.university,
+    fieldOfStudy: req.body.fieldOfStudy,
+    telegramId : req.body.telegramId,
     profilePicture : req.file === undefined ? 'default' : req.file.filename
   }
 
   User.create(userData, function (error, user) {
-    if (error) {
+    if (error) { //when Email is already exists come here, Because in mongoose Model we defined email uniqueness equals to true
       res.status(400).send('email already exists.');
       return next(error);
-    } else {
+    }
+    else {
       req.session.userId = user._id;
       console.log(user);
-
 
       var tokenData = {
         _userId: user._id,
@@ -56,8 +52,8 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
           return res.status(500).send({ msg: err.message });
         }
         var transporter = nodemailer.createTransport({
-           service: 'Sendgrid',
-           auth: { user: 'soorism' , pass: 'ss98aven77' }
+           service: 'Gmail',
+           auth: { user: 'kheftKetab' , pass: 'kheftKetab.ir' }
         });
         var mailOptions = { from: 'no-reply@KheftKetab.com', to: user.email,
           subject: 'Account Verification Token', text: 'Hello,\n\n' +
@@ -66,7 +62,7 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
               console.log(mailOptions.text);
         transporter.sendMail(mailOptions, function (err) {
           if (err) {
-            console.log('error :',err.message)
+            console.log('ُSending Email failed. error :',err.message)
             return res.status(500).send({ msg: err.message });
           }
           return res.status(200).send('A verification email has been sent to ' + user.email + '.');
