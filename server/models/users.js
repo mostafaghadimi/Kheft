@@ -17,7 +17,8 @@ var userSchema = mongoose.Schema({
     type: String,
     unique: true,
     required: true,
-    trim: true
+    trim: true,
+    lowercase: true
   },
   credit:{
     type: Number,
@@ -30,7 +31,6 @@ var userSchema = mongoose.Schema({
   telegramId:{
     type: String,
     trim: true,
-    required: true
   },
   university: {
     type: String,
@@ -41,9 +41,6 @@ var userSchema = mongoose.Schema({
     required: true
   },
   inboxMessages: {
-    type: Array
-  },
-  submittedBooks:{
     type: Array
   },
   profilePicture: {

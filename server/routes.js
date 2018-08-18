@@ -116,10 +116,13 @@ router.get('/confirmation/:token',(req,res,next) => {
       }
 
       User.findOne({ _id: token._userId }, function (err, user) {
-        if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
-        if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
-
-            // Verify and save the user
+        if (!user) {
+          return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
+        }
+        else if (user.isVerified) {
+          return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
+        }
+        // Verify and save the user
         user.verified = true;
         user.save(function (err) {
           if (err) {
@@ -143,7 +146,9 @@ router.post('/login', (req, res,next) => {
         err.status = 401;
         return next(err);
       }
+      console.log(user);
       req.session.userId = user._id;
+      req.session.loggedIn = true;
       if (!user.verified){
         var err = new Error('This account has not been verified');
         err.status = 401;
@@ -219,8 +224,9 @@ router.get('/logout', (req, res) => {
   }
 });
 
-router.get('/api/users/:id',(req, res, next) => {
+router.get('/api/users/:username',(req, res, next) => {
   if (req.session.userId === undefined){
+    //TODO: redirect to login page
     var err = new Error('Not authorized!');
     err.status = 400;
     return next(err);
@@ -233,8 +239,6 @@ router.get('/api/users/:id',(req, res, next) => {
         err.status = 401;
         return next(err);
       }
-      console.log(user);
-
       return res.json(user);
     });
   }
