@@ -25,6 +25,7 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
   var hash = bcrypt.hashSync(req.body.password, 10);
   var userData = {
     name : req.body.name,
+    username: req.body.username,
     email: req.body.email,
     password: hash,
     university: req.body.university,
@@ -218,13 +219,13 @@ router.get('/logout', (req, res) => {
   }
 });
 
-router.get('/api/users/:id',(req,res,next) => {
+router.get('/api/users/:id',(req, res, next) => {
   if (req.session.userId === undefined){
     var err = new Error('Not authorized!');
     err.status = 400;
     return next(err);
-  }else {
-    User.findOne({ telegramId: req.params.id }).exec(function(err,user){
+  } else {
+    User.findOne({ username: req.params.username }).exec(function(err,user){
       if (err) {
         return next(err)
       } else if (!user) {
@@ -232,6 +233,8 @@ router.get('/api/users/:id',(req,res,next) => {
         err.status = 401;
         return next(err);
       }
+      console.log(user);
+
       return res.json(user);
     });
   }
