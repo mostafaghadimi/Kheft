@@ -16,7 +16,7 @@ var Token = require('./models/token');
 var multer = require('multer'); // recieve images from user
 var upload = multer({dest: '../assets/uploads/profilePicture'}); //upload directory
 
-router.get('/', (req, res) => {
+router.get('/', (req, res) => {   
     res.sendFile(path.join(__dirname, '../assets/html/index.html'));
 });
 
