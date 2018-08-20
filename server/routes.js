@@ -1,11 +1,21 @@
 var express = require('express');
 var router = express.Router();
+<<<<<<< HEAD
 // In sendFile method to access the directory in which you are you need this part
 var path = require('path');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var io = require('socket.io');
+=======
+
+var path = require('path'); // JS built-in method used for address mode! 
+
+var nodemailer = require('nodemailer'); // Registration verification Email sender
+var crypto = require('crypto'); // token creator
+
+var bcrypt = require('bcrypt'); // Hashing user password in registration
+>>>>>>> 1299f3d2ce0d84fbaf61243df879a26697ccf3c9
 
 // Importing Models and Schemas from ./models/
 var User = require('./models/users');
@@ -13,41 +23,40 @@ var Book = require('./models/book');
 var Token = require('./models/mailToken');
 var BookRequest = require('./models/bookRequest');
 
-// mult can handle multipart and file data requests
-var multer = require('multer');
-var upload = multer({dest: '../assets/uploads/profilePicture'});
+var multer = require('multer'); // recieve images from user
+var upload = multer({dest: '../assets/uploads/profilePicture'}); //upload directory
 
-
-router.get('/', (req, res) => {
-  if(req.session.userId !== undefined){
-    res.redirect('/home');
-  }
-  else {
+router.get('/', (req, res) => {   
     res.sendFile(path.join(__dirname, '../assets/html/index.html'));
+<<<<<<< HEAD
   }
   console.log(io.sockets);
+=======
+>>>>>>> 1299f3d2ce0d84fbaf61243df879a26697ccf3c9
 });
 
-
 router.post('/registration', upload.single('image'), (req, res, next) => {
-
+  //TODO: translate the messages and using JSON Web Token to create token :). change the current email and password
   var hash = bcrypt.hashSync(req.body.password, 10);
   var userData = {
     name : req.body.name,
+    username: req.body.username,
     email: req.body.email,
-    telegramId : req.body.telegramId,
     password: hash,
+    university: req.body.university,
+    fieldOfStudy: req.body.fieldOfStudy,
+    telegramId : req.body.telegramId,
     profilePicture : req.file === undefined ? 'default' : req.file.filename
   }
 
   User.create(userData, function (error, user) {
-    if (error) {
+    if (error) { //when Email is already exists come here, Because in mongoose Model we defined email uniqueness equals to true
       res.status(400).send('email already exists.');
       return next(error);
-    } else {
+    }
+    else {
       req.session.userId = user._id;
       console.log(user);
-
 
       var tokenData = {
         _userId: user._id,
@@ -59,8 +68,8 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
           return res.status(500).send({ msg: err.message });
         }
         var transporter = nodemailer.createTransport({
-           service: 'Sendgrid',
-           auth: { user: 'soorism' , pass: 'ss98aven77' }
+           service: 'Gmail',
+           auth: { user: 'kheftKetab' , pass: 'kheftKetab.ir' }
         });
         var mailOptions = { from: 'no-reply@KheftKetab.com', to: user.email,
           subject: 'Account Verification Token', text: 'Hello,\n\n' +
@@ -69,7 +78,7 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
               console.log(mailOptions.text);
         transporter.sendMail(mailOptions, function (err) {
           if (err) {
-            console.log('error :',err.message)
+            console.log('ُSending Email failed. error :',err.message)
             return res.status(500).send({ msg: err.message });
           }
           return res.status(200).send('A verification email has been sent to ' + user.email + '.');
@@ -123,10 +132,13 @@ router.get('/confirmation/:token',(req,res,next) => {
       }
 
       User.findOne({ _id: token._userId }, function (err, user) {
-        if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
-        if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
-
-            // Verify and save the user
+        if (!user) {
+          return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
+        }
+        else if (user.isVerified) {
+          return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
+        }
+        // Verify and save the user
         user.verified = true;
         user.save(function (err) {
           if (err) {
@@ -150,7 +162,9 @@ router.post('/login', (req, res,next) => {
         err.status = 401;
         return next(err);
       }
+      console.log(user);
       req.session.userId = user._id;
+      req.session.loggedIn = true;
       if (!user.verified){
         var err = new Error('This account has not been verified');
         err.status = 401;
@@ -226,13 +240,14 @@ router.get('/logout', (req, res) => {
   }
 });
 
-router.get('/api/users/:id',(req,res,next) => {
+router.get('/api/users/:username',(req, res, next) => {
   if (req.session.userId === undefined){
+    //TODO: redirect to login page
     var err = new Error('Not authorized!');
     err.status = 400;
     return next(err);
-  }else {
-    User.findOne({ telegramId: req.params.id }).exec(function(err,user){
+  } else {
+    User.findOne({ username: req.params.username }).exec(function(err,user){
       if (err) {
         return next(err)
       } else if (!user) {

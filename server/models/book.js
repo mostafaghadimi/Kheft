@@ -5,27 +5,51 @@ var bookSchema = mongoose.Schema({
     required: true,
     trim: true
   },
-  author:{
+  username: {
     type: String,
-    required:true
+    requried: true,
+    trim: true
   },
-  year:{
+  author: {
+    type: String,
+    required:true,
+    trim: true
+  },
+
+  year: {
     type: Number,
-    required : true
+    required : true,
+    trim: true
   },
-  publication:{
+
+  publication: {
     type: String,
-    required:true
+    required:true,
+    trim: true
   },
-  ownerId:{
+
+  ownerId: {
     type: String,
-    required:true
+    required:true,
   },
+
+  price: {
+    type: String,
+    required: true
+  },
+  major: {
+    type: Array,
+    required: true
+  },
+<<<<<<< HEAD
   subject: {
     type: Array,
     required: true
   },
   picture:{
+=======
+  picture: {
+>>>>>>> 1299f3d2ce0d84fbaf61243df879a26697ccf3c9
     type: String,
     default: 'default'
   },
