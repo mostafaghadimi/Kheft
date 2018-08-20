@@ -5,11 +5,13 @@ var path = require('path');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
+var io = require('socket.io');
 
 // Importing Models and Schemas from ./models/
 var User = require('./models/users');
 var Book = require('./models/book');
-var Token = require('./models/token');
+var Token = require('./models/mailToken');
+var BookRequest = require('./models/bookRequest');
 
 // mult can handle multipart and file data requests
 var multer = require('multer');
@@ -23,6 +25,7 @@ router.get('/', (req, res) => {
   else {
     res.sendFile(path.join(__dirname, '../assets/html/index.html'));
   }
+  console.log(io.sockets);
 });
 
 
@@ -78,6 +81,7 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
 });
 
 router.get('/token/resend',(req,res,next) => {
+  //// TODO: JWT
   User.findOne({ _id: req.session.userId }, function (err, user){
     if(err) {
       return next(err);
@@ -92,7 +96,7 @@ router.get('/token/resend',(req,res,next) => {
       token: crypto.randomBytes(16).toString('hex')
     };
 
-    token.save(function (err) {
+    Token.create(tokenData,function (err,token) {
       if (err) { return res.status(500).send({ msg: err.message }); }
 
         // Send the email
@@ -258,6 +262,22 @@ router.get('/api/books/:id',(req,res,next) => {
       return res.json(book);
     });
   }
+});
+
+router.post('/request/make',(req,res) => {
+  var from = req.session.userId;
+  var to = req.body.to;
+  var bookId = req.body.bookId;
+  var bookRequestData = {
+    from : from,
+    to : to,
+    bookId : bookId
+  };
+  BookRequest.create(bookRequestData,(error,bookRequest) => {
+    if (error) { return res.status(500).send({ msg: error.message }); }
+    console.log('book request :',bookRequest._id);
+    res.status(200).send('request submitted!');
+  });
 });
 
 router.get('*', function(req, res){

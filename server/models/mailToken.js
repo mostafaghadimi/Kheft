@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var tokenSchema = new mongoose.Schema({
+var mailTokenSchema = new mongoose.Schema({
     _userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -17,6 +17,6 @@ var tokenSchema = new mongoose.Schema({
     }
 });
 
-
-var Token = mongoose.model('Token', tokenSchema);
+//for email verification
+var Token = mongoose.model('MailToken', mailTokenSchema);
 module.exports = Token;

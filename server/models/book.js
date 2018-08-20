@@ -21,14 +21,18 @@ var bookSchema = mongoose.Schema({
     type: String,
     required:true
   },
-  // major: {
-  //   type: Array,
-  //   required: true
-  // },
+  subject: {
+    type: Array,
+    required: true
+  },
   picture:{
     type: String,
     default: 'default'
   },
+  active :{
+    type : Boolean,
+    default : true
+  }
 });
 
 var Book = mongoose.model('Book', bookSchema);

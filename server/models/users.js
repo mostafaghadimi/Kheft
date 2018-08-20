@@ -6,6 +6,11 @@ var userSchema = mongoose.Schema({
     required: true,
     trim: true
   },
+  username:{
+    type: String,
+    trim: true,
+    required: true
+  },
   credit:{
     type: Number,
     default:0
@@ -25,19 +30,21 @@ var userSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  // university: {
-  //   type: String,
-  //   required: true
-  // },
-  // fieldOfStudy: {
-  //   type: String,
-  //   required: true
-  // },
-  inboxMessages: {
-    type: Array
+  university: {
+    type: String,
+    required: true
   },
-  submittedBooks:{
-    type: Array
+  fieldOfStudy: {
+    type: String,
+    required: true
+  },
+  requestsReceived :{
+    type : Array,
+    default : []
+  },
+  requestsMade :{
+    type : Array,
+    default : []
   },
   profilePicture: {
     type: String,
@@ -70,17 +77,6 @@ userSchema.statics.authenticate = function (email, password, callback) {
       })
     });
 }
-
-// userSchema.pre('save', function (next) {
-//   var user = this;
-//   bcrypt.hash(user.password, 10, function (err, hash){
-//     if (err) {
-//       return next(err);
-//     }
-//     user.password = hash;
-//     next();
-//   })
-// });
 
 var User = mongoose.model('User', userSchema);
 module.exports = User;
