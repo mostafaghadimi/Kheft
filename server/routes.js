@@ -1,21 +1,12 @@
 var express = require('express');
 var router = express.Router();
-<<<<<<< HEAD
-// In sendFile method to access the directory in which you are you need this part
-var path = require('path');
-var nodemailer = require('nodemailer');
-var crypto = require('crypto');
-var bcrypt = require('bcrypt');
-var io = require('socket.io');
-=======
 
-var path = require('path'); // JS built-in method used for address mode! 
+var path = require('path'); // JS built-in method used for address mode!
 
 var nodemailer = require('nodemailer'); // Registration verification Email sender
 var crypto = require('crypto'); // token creator
 
 var bcrypt = require('bcrypt'); // Hashing user password in registration
->>>>>>> 1299f3d2ce0d84fbaf61243df879a26697ccf3c9
 
 // Importing Models and Schemas from ./models/
 var User = require('./models/users');
@@ -26,13 +17,8 @@ var BookRequest = require('./models/bookRequest');
 var multer = require('multer'); // recieve images from user
 var upload = multer({dest: '../assets/uploads/profilePicture'}); //upload directory
 
-router.get('/', (req, res) => {   
+router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../assets/html/index.html'));
-<<<<<<< HEAD
-  }
-  console.log(io.sockets);
-=======
->>>>>>> 1299f3d2ce0d84fbaf61243df879a26697ccf3c9
 });
 
 router.post('/registration', upload.single('image'), (req, res, next) => {

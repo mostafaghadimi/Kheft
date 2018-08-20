@@ -41,15 +41,11 @@ var bookSchema = mongoose.Schema({
     type: Array,
     required: true
   },
-<<<<<<< HEAD
   subject: {
     type: Array,
     required: true
   },
   picture:{
-=======
-  picture: {
->>>>>>> 1299f3d2ce0d84fbaf61243df879a26697ccf3c9
     type: String,
     default: 'default'
   },
