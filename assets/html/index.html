@@ -4,21 +4,15 @@
 <head>
   <meta charset="utf-8">
   <title>React Project</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.8.2/antd.min.css" rel="stylesheet" type="text/css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/3.8.2/antd.min.js"></script>
+  
   <link href="/assets/stylesheet/stylesheet.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-  <div id="main">
+  <div id="main" >
   </div>
   <script src="/build/bundle.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    var socket = io('http://localhost:3000');
-    socket.on('news', function (data) {
-      console.log(data);
-      socket.emit('my other event', { my: 'data' });
-    });
-  </script>
 </body>
-
 </html>

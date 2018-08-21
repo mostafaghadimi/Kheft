@@ -9,21 +9,29 @@ var watchify = require('watchify')
 var buffer = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
 
-gulp.task('browserify' , function(){
+gulp.task('browserify', function () {
   return browserify('./assets/scripts/main.js')
-        .transform(babelify , {presets: ["es2015", "react"]})
-        .bundle()
-        .on('error' , function(e) {
-          console.log(e.message);
-          this.emit('end');
-        })
-        .pipe(source('bundle.js'))
-        // .pipe(buffer())
-        // .pipe(uglify())
-        .pipe(gulp.dest('./build'));
+    .transform(babelify, {
+      presets: ["es2015", "react"],
+      "plugins": [
+        ["import", {
+          "libraryName": "antd",
+          "style": "css"
+        }]
+      ]
+    })
+    .bundle()
+    .on('error', function (e) {
+      console.log(e.message);
+      this.emit('end');
+    })
+    .pipe(source('bundle.js'))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(gulp.dest('./build'));
 });
 
 
-gulp.task('watch' , ['browserify'],  function() {
-  gulp.watch('./assets/scripts/**/*.js' , ['browserify']);
+gulp.task('watch', ['browserify'], function () {
+  gulp.watch('./assets/scripts/**/*.js', ['browserify']);
 });

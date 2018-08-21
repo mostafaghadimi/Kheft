@@ -6,8 +6,12 @@ var path = require('path');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 io.on('connection', (socket) => {
-  console.log('salam IO :))')
+  socket.emit('this', {will: 'be recieved by everyone'})
+  socket.on('private message', function (from, msg) {
+    console.log('I received a private message by ', from, ' saying ', msg);
+  });
 })
+
 
 // Running Server On the defined port
 port = 3000;

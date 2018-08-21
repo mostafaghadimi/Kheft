@@ -76,7 +76,7 @@ router.post('/registration', upload.single('image'), (req, res, next) => {
 });
 
 router.get('/token/resend',(req,res,next) => {
-  //// TODO: JWT
+  // TODO: JWT
   User.findOne({ _id: req.session.userId }, function (err, user){
     if(err) {
       return next(err);
@@ -281,8 +281,8 @@ router.post('/request/make',(req,res) => {
   });
 });
 
-router.get('*', function(req, res){
-   res.sendFile(path.join(__dirname, '../assets/html/not_found.html'));
-});
+// router.get('*', function(req, res){
+//    res.sendFile(path.join(__dirname, '../assets/html/not_found.html'));
+// });
 
 module.exports = router;
