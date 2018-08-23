@@ -8,9 +8,13 @@
 </head>
 
 <body>
-  <p>
-    {{name}}
-  </p>
+  <%= name %>
+
+  <script>
+    var name = '{{ name }}';
+    console.log(name);
+  </script>
+
   <div id="main">
     <div id="registration"></div>
     <div id="login"></div>

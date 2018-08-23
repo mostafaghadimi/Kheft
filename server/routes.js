@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var path = require('path'); // JS built-in method used for address mode! 
+var path = require('path'); // JS built-in method used for address mode!
 
 var nodemailer = require('nodemailer'); // Registration verification Email sender
 var crypto = require('crypto'); // token creator
@@ -205,8 +205,9 @@ router.get('/home', function (req, res, next) {
           return next(err);
         } else {
           console.log('home : ',req.session.userId);
-          res.send('<h1>Name: </h1>' + user.name + '<h2>Mail: </h2>'
-           + user.email + '<br><a type="button" href="/logout">Logout</a>');
+          res.render('index', { name: "example" });
+          // res.send('<h1>Name: </h1>' + user.name + '<h2>Mail: </h2>'
+          //  + user.email + '<br><a type="button" href="/logout">Logout</a>');
         }
       }
     });
