@@ -263,8 +263,8 @@ router.get('/api/books/:id',(req,res,next) => {
   }
 });
 
-router.get('*', function(req, res){
-   res.sendFile(path.join(__dirname, '../assets/html/not_found.html'));
-});
+// router.get('*', function(req, res){
+//    res.sendFile(path.join(__dirname, '../assets/html/not_found.html'));
+// });
 
 module.exports = router;
